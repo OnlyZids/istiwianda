@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, You!</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rose-pink': '#FFC3C3',
+                        'peach-pink': '#FFD1DC',
+                        'deep-rose': '#9F3F4F',
+                    },
+                    fontFamily: {
+                        'serif': ['"Playfair Display"', 'serif'],
+                        'sans': ['"Poppins"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Background Gradient Gerak */
+        body {
+            background: linear-gradient(-45deg, #FFC3C3, #ffe4e6, #FFD1DC, #fff0f5);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Efek Kaca (Glassmorphism) */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(255, 139, 167, 0.15);
+        }
+        
+        /* Animasi Blob */
+        .blob {
+            position: absolute;
+            filter: blur(40px);
+            z-index: -1;
+            opacity: 0.6;
+            animation: moveBlob 20s infinite alternate;
+        }
+        @keyframes moveBlob {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(50px, -50px) scale(1.1); }
+        }
+
+        /* Animasi Floating Hearts (Background) */
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+        }
+        .animate-float {
+            animation: floatUp 15s linear infinite;
+        }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+        .animation-delay-1000 { animation-delay: 1s; }
+
+        /* Animasi Kabut (Fog) */
+        @keyframes fogFlow {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.1) translate(-20px, -10px); }
+            100% { transform: scale(1) translate(0, 0); }
+        }
+        .animate-fog-flow {
+            animation: fogFlow 20s infinite ease-in-out alternate;
+        }
+
+        .hidden-content { display: none; }
+
+        @keyframes flyAcross {
+            0% { transform: translateX(0) translateY(0) rotate(0deg); }
+            20% { transform: translateX(40vw) translateY(50px) rotate(5deg); }
+            50% { transform: translateX(70vw) translateY(-20px) rotate(-5deg); }
+            100% { transform: translateX(120vw) translateY(20px) rotate(0deg); }
+        }
+        .animate-fly {
+            animation: flyAcross 2.5s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+        }
+        
+        /* Scrollbar Cantik buat Surat */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #fb7185; border-radius: 10px; }
+
+        /* EFEK KARTU 3D FLIP */
+        .flip-card {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efek mantul dikit */
+            transform-style: preserve-3d;
+        }
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1rem; /* rounded-2xl */
+        }
+        .flip-card-front {
+            z-index: 2;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+
+    
+</head>
+<body class="text-deep-rose font-sans overflow-x-hidden relative min-h-screen">
+
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute bottom-[-10%] left-[10%] text-4xl animate-float opacity-40">❤️</div>
+        <div class="absolute bottom-[-10%] left-[30%] text-2xl animate-float animation-delay-2000 opacity-30">💖</div>
+        <div class="absolute bottom-[-10%] left-[70%] text-5xl animate-float animation-delay-4000 opacity-40">🎂</div>
+        <div class="absolute bottom-[-10%] left-[90%] text-3xl animate-float animation-delay-1000 opacity-30">🎈</div>
+    </div>
+
+    <div id="gatekeeper" class="fixed inset-0 z-[100] bg-pink-100 flex flex-col items-center justify-center transition-transform duration-1000 ease-in-out px-4">
+        <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+        
+        <div class="glass-card p-6 md:p-8 rounded-3xl shadow-2xl text-center relative z-10 w-full max-w-xs md:max-w-sm border-2 border-white">
+            <div class="text-4xl md:text-5xl mb-4">🔒</div>
+            <h2 class="font-serif text-xl md:text-2xl font-bold mb-2 text-deep-rose">This Site is Locked</h2>
+            <p class="text-xs md:text-sm mb-6 text-gray-600">Masukin tanggal pertama kali kita komunikasi di sosmed</p>
+            
+            <input type="text" id="passcode" placeholder="" 
+                   class="w-full px-4 py-3 rounded-xl border-2 border-rose-300 focus:border-deep-rose focus:outline-none text-center text-lg tracking-widest mb-4 bg-white/80">
+            
+            <button onclick="cekPassword()" class="w-full bg-deep-rose text-white font-bold py-3 rounded-xl shadow-lg hover:bg-rose-700 transition transform active:scale-95 text-sm md:text-base">
+                Buka Gembok 🔑
+            </button>
+            
+            <p id="pesan-error" class="text-red-500 text-xs md:text-sm mt-3 hidden animate-pulse">
+                Salah wlee! Coba inget-inget lagi 😝
+            </p>
+        </div>
+    </div>
+
+    <div class="blob bg-rose-300 w-60 h-60 md:w-72 md:h-72 rounded-full top-10 -left-20 mix-blend-multiply"></div>
+    <div class="blob bg-peach-pink w-80 h-80 md:w-96 md:h-96 rounded-full bottom-10 -right-20 animation-delay-2000 mix-blend-multiply"></div>
+
+    <div id="opening" class="fixed inset-0 z-50 flex flex-col items-center justify-center h-screen w-screen transition-all duration-1000 overflow-hidden px-4">
+        <div class="absolute inset-0 bg-white/30 backdrop-blur-md"></div>
+        
+        <div class="relative z-10 text-center">
+            
+            <div class="w-32 h-32 md:w-48 md:h-48 mx-auto mb-6 bg-white/40 backdrop-blur-sm rounded-full flex items-center justify-center shadow-xl border-4 border-white/50 overflow-hidden relative">
+                <lottie-player src="assets/happy.json" background="transparent" speed="1" loop autoplay class="w-[120%] h-[120%] transform translate-y-2"></lottie-player>
+            </div>
+            
+            <h1 class="font-serif text-3xl md:text-5xl font-bold mb-4 tracking-wide text-deep-rose drop-shadow-sm">
+                Hey, Isti Wianda!✨
+            </h1>
+            
+            <p class="text-base md:text-lg mb-8 font-light text-gray-700">Ada sesuatu spesial nih...</p>
+            
+            <button onclick="bukaKado()" class="group relative inline-flex items-center justify-start overflow-hidden rounded-full px-8 py-3 bg-deep-rose text-white shadow-lg transition-all hover:bg-rose-600 hover:shadow-xl hover:-translate-y-1">
+                <span class="absolute inset-0 h-full w-full bg-gradient-to-br from-rose-400 via-deep-rose to-pink-600 opacity-0 transition-all duration-300 group-hover:opacity-100"></span>
+                <span class="relative font-semibold tracking-wider text-sm md:text-base">✨ Buka Sekarang</span>
+            </button>
+        </div>
+    </div>
+
+    <main id="isi-konten" class="hidden-content relative z-10 py-10">
+        <audio id="musikku" loop class="hidden"><source src="assets/about you.mp3" type="audio/mpeg"></audio>
+
+        <section class="min-h-[90vh] flex items-center justify-center mb-10 px-4 pt-20">
+            <div class="glass-card p-6 md:p-12 rounded-[2rem] md:rounded-[3rem] max-w-2xl text-center w-full relative z-10" data-aos="zoom-in-up" data-aos-duration="1200">
+                
+                <div class="w-32 h-32 mx-auto mb-6 bg-white/60 rounded-full flex items-center justify-center shadow-md overflow-hidden relative border-4 border-white/40">
+                    <lottie-player src="assets/haii.json" background="transparent" speed="1" loop autoplay class="w-full h-full transform scale-110"></lottie-player>
+                </div>
+
+                <h2 class="font-serif font-bold mb-6 tracking-wide leading-tight text-deep-rose" data-aos="fade-right">
+                    <span class="text-2xl md:text-4xl block mb-2">Happy Birthday</span>
+                    <span class="text-4xl md:text-6xl text-pink-600 drop-shadow-md block mb-2">Isti Wianda</span> 
+                    <span class="inline-block animate-bounce text-3xl md:text-5xl">🎉</span>
+                    
+                </h2>
+
+                <div class="space-y-4 text-base md:text-xl leading-relaxed font-light text-gray-700">
+                    <p id="ucapan" class="min-h-[80px] md:min-h-[60px]"></p> 
+                    <p class="font-medium mt-6 text-deep-rose">Enjoy your day! 🥳</p>
+                </div>
+            </div>
+        </section>
+
+                <section class="relative bg-black text-white overflow-hidden">
+            <div class="absolute inset-0 z-0 opacity-40">
+                <div class="fog-img absolute inset-0 bg-[url('https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/fog1.png')] bg-cover bg-center animate-fog-flow"></div>
+                <div class="fog-img absolute inset-0 bg-[url('https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/fog2.png')] bg-cover bg-center animate-fog-flow animation-delay-2000"></div>
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-b from-rose-pink via-transparent to-white z-10"></div>
+
+            <div class="relative z-20">
+                <div class="h-screen flex items-center justify-center sticky top-0">
+                    <h2 class="text-4xl md:text-6xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-pink-200 drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] text-center px-4"
+                        data-aos="zoom-out" data-aos-duration="2000">
+                        "Do you think I have forgotten?"
+                    </h2>
+                </div>
+                <div class="h-screen flex items-center justify-center sticky top-0 bg-black/20 backdrop-blur-sm">
+                    <h2 class="text-4xl md:text-6xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-200 to-white drop-shadow-[0_0_15px_rgba(255,192,203,0.8)] text-center px-4"
+                        data-aos="zoom-in" data-aos-duration="2000">
+                        "Selamat ulang tahun yang ke 21, Isti Wianda!"
+                    </h2>
+                </div>
+                <div class="h-screen flex flex-col items-center justify-center sticky top-0 bg-black/40 backdrop-blur-md">
+                    <p class="text-white/80 font-sans tracking-[0.5em] text-sm mb-6 uppercase" data-aos="fade-up">
+                        The Special Message
+                    </p>
+                    <h2 class="text-5xl md:text-7xl font-serif font-bold text-white drop-shadow-[0_0_20px_rgba(255,255,255,1)] text-center leading-tight px-4"
+                        data-aos="fade-up" data-aos-delay="300">
+                        From Sora <br>
+                        <span class="text-pink-400 italic">To Floryn</span>
+                    </h2>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 relative z-20 overflow-hidden">
+            
+            <div class="text-center mb-12" data-aos="fade-down">
+                <h3 class="font-serif text-3xl md:text-4xl font-bold text-deep-rose inline-block relative">
+                    Beauty Pictures📸
+                    <svg class="absolute -bottom-2 w-full h-3 text-pink-400" viewBox="0 0 100 10" preserveAspectRatio="none">
+                        <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="3" fill="none" />
+                    </svg>
+                </h3>
+                <p class="text-sm mt-4 text-gray-500 font-light italic">You are so beautiful in all the portraits ✨</p>
+            </div>
+            
+            <div class="swiper mySwiper w-full py-10 px-4" data-aos="zoom-in-up" data-aos-duration="1000">
+                <div class="swiper-wrapper">
+                    
+                    <div class="swiper-slide w-64 h-80 relative select-none grayscale hover:grayscale-0 transition-all duration-500">
+                         <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-rose-300/60 rotate-[-3deg] z-20 shadow-sm backdrop-blur-sm"></div>
+                         
+                         <div class="w-full h-full bg-white p-3 pb-12 rounded shadow-2xl transform rotate-1 hover:rotate-0 transition-all duration-300 border border-gray-100">
+                              <img src="assets/istiwianda 1.jpeg" class="w-full h-full object-cover rounded-sm bg-gray-100">
+                              <div class="absolute bottom-4 left-0 w-full text-center font-serif text-gray-600 text-sm tracking-widest">
+                                  Sweet Smile
+                              </div>
+                         </div>
+                    </div>
+
+                    <div class="swiper-slide w-64 h-80 relative select-none grayscale hover:grayscale-0 transition-all duration-500">
+                         <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-blue-200/60 rotate-[2deg] z-20 shadow-sm backdrop-blur-sm"></div>
+                         <div class="w-full h-full bg-white p-3 pb-12 rounded shadow-2xl transform -rotate-1 hover:rotate-0 transition-all duration-300 border border-gray-100">
+                              <img src="assets/istiwianda 2.jpeg" class="w-full h-full object-cover rounded-sm bg-gray-100">
+                              <div class="absolute bottom-4 left-0 w-full text-center font-serif text-gray-600 text-sm tracking-widest">
+                                  OOTD Kece
+                              </div>
+                         </div>
+                    </div>
+
+                    <div class="swiper-slide w-64 h-80 relative select-none grayscale hover:grayscale-0 transition-all duration-500">
+                         <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-yellow-200/60 rotate-[-1deg] z-20 shadow-sm backdrop-blur-sm"></div>
+                         <div class="w-full h-full bg-white p-3 pb-12 rounded shadow-2xl transform rotate-2 hover:rotate-0 transition-all duration-300 border border-gray-100">
+                              <img src="assets/istiwianda 4.jpeg" class="w-full h-full object-cover rounded-sm bg-gray-100">
+                              <div class="absolute bottom-4 left-0 w-full text-center font-serif text-gray-600 text-sm tracking-widest">
+                                  Random Moment
+                              </div>
+                         </div>
+                    </div>
+
+                    <div class="swiper-slide w-64 h-80 relative select-none grayscale hover:grayscale-0 transition-all duration-500">
+                         <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-purple-200/60 rotate-[3deg] z-20 shadow-sm backdrop-blur-sm"></div>
+                         <div class="w-full h-full bg-white p-3 pb-12 rounded shadow-2xl transform -rotate-2 hover:rotate-0 transition-all duration-300 border border-gray-100">
+                              <img src="assets/istiwianda 5.jpeg" class="w-full h-full object-cover rounded-sm bg-gray-100">
+                              <div class="absolute bottom-4 left-0 w-full text-center font-serif text-gray-600 text-sm tracking-widest">
+                                  So Pretty!
+                              </div>
+                         </div>
+                    </div>
+
+                     <div class="swiper-slide w-64 h-80 relative select-none grayscale hover:grayscale-0 transition-all duration-500">
+                         <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-green-200/60 rotate-[-2deg] z-20 shadow-sm backdrop-blur-sm"></div>
+                         <div class="w-full h-full bg-white p-3 pb-12 rounded shadow-2xl transform rotate-1 hover:rotate-0 transition-all duration-300 border border-gray-100">
+                              <img src="assets/istiwianda 3.jpeg" class="w-full h-full object-cover rounded-sm bg-gray-100">
+                              <div class="absolute bottom-4 left-0 w-full text-center font-serif text-gray-600 text-sm tracking-widest">
+                                  Favorite Pic
+                              </div>
+                         </div>
+                    </div>
+
+                     <div class="swiper-slide w-64 h-80 relative select-none grayscale hover:grayscale-0 transition-all duration-500">
+                         <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-green-200/60 rotate-[-2deg] z-20 shadow-sm backdrop-blur-sm"></div>
+                         <div class="w-full h-full bg-white p-3 pb-12 rounded shadow-2xl transform rotate-1 hover:rotate-0 transition-all duration-300 border border-gray-100">
+                              <img src="assets/istiwianda 6.jpeg" class="w-full h-full object-cover rounded-sm bg-gray-100">
+                              <div class="absolute bottom-4 left-0 w-full text-center font-serif text-gray-600 text-sm tracking-widest">
+                                    Cute Pic
+                              </div>
+                         </div>
+                    </div>
+
+                     <div class="swiper-slide w-64 h-80 relative select-none grayscale hover:grayscale-0 transition-all duration-500">
+                         <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-green-200/60 rotate-[-2deg] z-20 shadow-sm backdrop-blur-sm"></div>
+                         <div class="w-full h-full bg-white p-3 pb-12 rounded shadow-2xl transform rotate-1 hover:rotate-0 transition-all duration-300 border border-gray-100">
+                              <img src="assets/istiwianda 7.jpeg" class="w-full h-full object-cover rounded-sm bg-gray-100">
+                              <div class="absolute bottom-4 left-0 w-full text-center font-serif text-gray-600 text-sm tracking-widest">
+                                    best Pic
+                              </div>
+                         </div>
+                    </div>
+
+                     <div class="swiper-slide w-64 h-80 relative select-none grayscale hover:grayscale-0 transition-all duration-500">
+                         <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-green-200/60 rotate-[-2deg] z-20 shadow-sm backdrop-blur-sm"></div>
+                         <div class="w-full h-full bg-white p-3 pb-12 rounded shadow-2xl transform rotate-1 hover:rotate-0 transition-all duration-300 border border-gray-100">
+                              <img src="assets/istiwianda 8.jpeg" class="w-full h-full object-cover rounded-sm bg-gray-100">
+                              <div class="absolute bottom-4 left-0 w-full text-center font-serif text-gray-600 text-sm tracking-widest">
+                                    kawaii Pic
+                              </div>
+                         </div>
+                    </div>
+
+                     <div class="swiper-slide w-64 h-80 relative select-none grayscale hover:grayscale-0 transition-all duration-500">
+                         <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-green-200/60 rotate-[-2deg] z-20 shadow-sm backdrop-blur-sm"></div>
+                         <div class="w-full h-full bg-white p-3 pb-12 rounded shadow-2xl transform rotate-1 hover:rotate-0 transition-all duration-300 border border-gray-100">
+                              <img src="assets/istiwianda 9.jpeg" class="w-full h-full object-cover rounded-sm bg-gray-100">
+                              <div class="absolute bottom-4 left-0 w-full text-center font-serif text-gray-600 text-sm tracking-widest">
+                                     Murung Pic
+                              </div>
+                         </div>
+                    </div>
+
+                     <div class="swiper-slide w-64 h-80 relative select-none grayscale hover:grayscale-0 transition-all duration-500">
+                         <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-green-200/60 rotate-[-2deg] z-20 shadow-sm backdrop-blur-sm"></div>
+                         <div class="w-full h-full bg-white p-3 pb-12 rounded shadow-2xl transform rotate-1 hover:rotate-0 transition-all duration-300 border border-gray-100">
+                              <img src="assets/istiwianda 10.jpeg" class="w-full h-full object-cover rounded-sm bg-gray-100">
+                              <div class="absolute bottom-4 left-0 w-full text-center font-serif text-gray-600 text-sm tracking-widest">
+                                    Velocity Pic
+                              </div>
+                         </div>
+                    </div>
+
+                </div>
+                <div class="swiper-pagination !-bottom-5"></div>
+            </div>
+        </section>
+
+        <section class="py-20 mb-10 relative z-20">
+            <h3 class="font-serif text-center text-3xl font-bold mb-12 text-deep-rose" data-aos="fade-down">Dunia Favorit Kamu ✨</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto px-6">
+                <div onclick="bukaModal('makanan')" class="group flex flex-col items-center cursor-pointer" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="glass-card w-28 h-28 rounded-full flex items-center justify-center text-5xl mb-3 shadow-md group-hover:scale-110 group-hover:rotate-6 group-hover:bg-white/60 transition-all duration-300">🍰</div>
+                    <p class="font-medium tracking-wide group-hover:text-deep-rose transition">Favorite Food</p>
+                </div>
+                <div onclick="bukaModal('minuman')" class="group flex flex-col items-center cursor-pointer" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="glass-card w-28 h-28 rounded-full flex items-center justify-center text-5xl mb-3 shadow-md group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-white/60 transition-all duration-300">🥤</div>
+                    <p class="font-medium tracking-wide group-hover:text-deep-rose transition">Favorite Drink</p>
+                </div>
+                <div onclick="bukaModal('musik')" class="group flex flex-col items-center cursor-pointer" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="glass-card w-28 h-28 rounded-full flex items-center justify-center text-5xl mb-3 shadow-md group-hover:scale-110 group-hover:rotate-6 group-hover:bg-white/60 transition-all duration-300">🎧</div>
+                    <p class="font-medium tracking-wide group-hover:text-deep-rose transition">Favorite Song</p>
+                </div>
+                <div onclick="bukaModal('traveling')" class="group flex flex-col items-center cursor-pointer" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="glass-card w-28 h-28 rounded-full flex items-center justify-center text-5xl mb-3 shadow-md group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-white/60 transition-all duration-300">✈️</div>
+                    <p class="font-medium tracking-wide group-hover:text-deep-rose transition">Whislist Contry</p>
+                </div>
+            </div>
+        </section>
+
+        <div id="modal-overlay" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
+            <div onclick="tutupModal()" class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"></div>
+            <div class="glass-card w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl p-6 md:p-8 relative z-10 animate-fade-in-up">
+                <button onclick="tutupModal()" class="absolute top-4 right-4 bg-white/50 hover:bg-red-100 text-deep-rose rounded-full p-2 transition">❌</button>
+                <h2 id="modal-title" class="font-serif text-3xl font-bold text-center mb-8 text-deep-rose">Judul Kategori</h2>
+                <div id="modal-grid" class="grid grid-cols-2 gap-4"></div>
+            </div>
+        </div>
+
+        <section class="py-20 px-4 flex justify-center items-center relative z-30">
+            
+            <div id="trigger-surat" class="text-center" data-aos="fade-up">
+                <p class="mb-4 text-deep-rose/70 font-serif italic">Ada satu pesan terakhir yang ingin kusampaikan...</p>
+                <button onclick="terbangkanPesawat()" class="glass-card px-8 py-4 rounded-full text-deep-rose font-bold text-lg shadow-lg hover:bg-white hover:scale-105 transition-all group flex items-center gap-2 mx-auto">
+                    <span>💌</span> Baca Pesan Dariku
+                </button>
+            </div>
+
+            <div id="pesawat-container" class="fixed inset-0 z-[60] pointer-events-none hidden overflow-hidden">
+                <div id="pesawat" class="absolute top-1/2 left-[-20%] w-48 h-48">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-full h-full text-deep-rose drop-shadow-2xl transform rotate-12">
+                        <path d="M1.94607 9.31543C1.42365 9.14125 1.41953 8.86022 1.95694 8.68108L21.0431 2.31901C21.5716 2.14285 21.8747 2.43866 21.7266 2.95694L16.2734 22.0432C16.1224 22.5716 15.8178 22.59 15.5945 22.0876L12 14L18 6.00005L10 12L1.94607 9.31543Z" stroke="currentColor" stroke-width="1" fill="#ffe4e6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="absolute top-1/2 right-full w-96 h-1 bg-gradient-to-l from-white/80 to-transparent"></div>
+                </div>
+            </div>
+
+            <div id="modal-surat" class="fixed inset-0 z-[70] hidden flex items-center justify-center px-4">
+                <div onclick="tutupSurat()" class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity opacity-0" id="backdrop-surat"></div>
+                
+                <div id="konten-surat" class="bg-[#fffdf0] w-full max-w-lg p-8 md:p-12 rounded-sm shadow-2xl relative transform scale-0 transition-all duration-500 rotate-1">
+                    
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-8 bg-rose-200/50 rotate-[-2deg]"></div>
+                    
+                    <button onclick="tutupSurat()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl">&times;</button>
+
+                    <div class="border-b-2 border-dashed border-rose-200 pb-4 mb-6 flex justify-between items-end">
+                        <span class="font-serif text-2xl font-bold text-deep-rose">Dear Isti...</span>
+                        <span class="text-xs text-gray-500 font-mono">08 March 2026</span>
+                    </div>
+
+                    <div class="font-serif text-gray-700 leading-relaxed space-y-4 text-lg max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+                        <p>Hai Isti, selamat ulang tahun ya! 🎉</p>
+                            <p>
+                                Nggak kerasa waktu cepet banget berlalu. Rasanya baru kemarin kita kenal, eh sekarang kita udah jalan di rute masing-masing dan jarang berkabar. Tapi aku pengen kamu tau, meskipun jarak kita udah nggak sedeket dulu, aku tetep nyimpen momen-momen seru yang pernah kita lewatin bareng dengan baik.
+                            </p>
+
+                            <p>
+                                Di malam Nisfu Sya'ban kemarin, salah satu doa terbaik yang aku panjatkan adalah untuk kamu. Kalo kamu ngira aku udah nyerah atau lupa, kamu salah besar. Aku selalu nginget senyum manismu, tawa ceriamu, sampe obrolan random kita yang selalu berhasil bikin aku seneng. Kamu itu spesial, dan aku bersyukur banget pernah punya kesempatan buat kenal kamu sedekat itu. 
+                            </p>
+
+                            <p>
+                                Malang selalu jadi tempat yang ingin ku kunjungi, karena ada kamu di sana. Meskipun aku nggak tau rencana Tuhan ke depannya gimana, dan mungkin jalan kita sekarang beda, aku tetep berharap suatu saat kita bisa ketemu lagi, ngobrol santai, atau sekadar main bareng. Tugasku sekarang cuma satu: mendoakan dan melihat kamu bahagia, apapun yang terjadi.
+                            </p>
+
+                            <p>
+                                Maafin aku ya, untuk semua hal yang mungkin pernah bikin kamu kecewa atau nggak sesuai sama harapan kamu dulu. Terima kasih untuk semua kenangan manis yang udah kita buat bareng. Aku nggak akan pernah lupain itu, karena kamu adalah salah satu bagian paling penting dalam perjalananku. Aku yakin kamu bisa terus berkembang dan ngejar semua mimpi-mimpimu, karena kamu itu kuat, cerdas, dan punya hati yang besar.
+                            </p>
+
+                            <p>
+                                aku gagal jadi apa yang kamu mau, jauh banget dari kata sempurna, jauh dari kata baik, maaf ya, kalo sama aku banyak sakitnya, banyak kecewanya, maaf kalo smaa aku enggak sebaik yang aku pikirin, dan maaf kamu harus ketemunya sama orang sepertiku, maaf maaf dan maaf yang bisa aku ucapkan ke kamu
+                            </p>
+
+                            <p>
+                               mungkin jika kamu tidak bertemu dengan ku, kamu sudah menemukan seseorang yang benar benar kamu ingin untuk mendampingi mu. maaf maaf dan maaf untuk semua hal yang kurang baik selama ini. tapi asal kamu tau semuanya sudah ku usaha yang terbaik dan semampuku. jika itu masih terlihat buruk aku hanya bisa berkata,maaf untuk semua hal yang menyakitimu. dan terimakasih sudah memberi cinta yang mungkin hanya aku yang merasakannya.
+                            </p>
+
+                            <p>
+                                Semoga di umur yang baru ini, kamu makin bahagia, makin cantik (pastinya!), dan semua yang kamu semogakan bisa terwujud. Inget ya, aku bakal selalu support kamu dari sini. Jangan lupa buat senyum terus hari ini, karena senyummu itu bikin dunia jadi lebih cerah. 
+                            </p>
+
+                            <p>
+                                Happy birthday sekali lagi, Isti Wianda! Semoga hari ini spesial banget, sama kayak kamu yang selalu spesial buat aku. 🎂🎈
+                            </p>
+                        <p class="font-bold text-deep-rose mt-8 text-right">From Yajiddd</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="py-20 min-h-[60vh] flex flex-col items-center justify-center relative overflow-hidden">
+            <div class="text-center mb-8 z-10" data-aos="fade-up">
+                <h3 class="font-serif text-3xl font-bold mb-2 text-deep-rose">Make a Wish! 🎂</h3>
+                <p class="text-deep-rose/70">Pejamkan mata, sebutkan harapanmu,<br>lalu klik lilin di bawah ini untuk meniupnya.</p>
+            </div>
+            <div class="relative z-10 cursor-pointer group" onclick="tiupLilin()">
+                <div id="lilin-nyala" class="w-64 h-64 transition-all duration-700 ease-in-out hover:scale-105 filter drop-shadow-[0_0_30px_rgba(255,200,100,0.6)]">
+                    <lottie-player src="assets/tiup.json" background="transparent" speed="1" loop autoplay></lottie-player>
+                </div>
+                <div id="pesan-harapan" class="hidden text-center transform scale-0 transition-all duration-500">
+                    <h2 class="font-serif text-4xl font-bold text-deep-rose mb-4 animate-bounce">Semoga Terkabul! ✨</h2>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center py-8 text-sm opacity-60 font-light">
+            <p>Dibuat spesial untukmu di hari spesialmu. 🤍</p>
+        </footer>
+    </main>
+
+    <button id="tombol-musik" onclick="toggleMusik()" class="hidden fixed bottom-8 right-8 z-50 glass-card p-4 rounded-full shadow-xl hover:scale-110 active:scale-95 transition-all duration-300 group animate-bounce-slow">
+        <span id="icon-musik" class="text-2xl group-hover:rotate-12 transition text-deep-rose">🎵</span>
+    </button>
+
+    <div id="modal-container" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300">
+    
+        <div class="bg-white/95 backdrop-blur-md border border-pink-100 rounded-3xl shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-y-auto p-6 md:p-8 relative">
+            
+            <button onclick="document.getElementById('modal-container').classList.add('hidden')" class="absolute top-4 right-4 w-10 h-10 bg-pink-50 text-pink-500 rounded-full flex items-center justify-center hover:bg-pink-400 hover:text-white transition-all text-3xl font-bold z-50">
+                &times;
+            </button>
+            
+            <h4 class="text-3xl font-serif text-center text-pink-500 mb-8 font-bold">Favoritnya Isti ✨</h4>
+
+            <div id="modal-content" class="w-full"></div> 
+
+        </div>
+    
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
